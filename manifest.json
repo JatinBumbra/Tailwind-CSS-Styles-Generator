@@ -1,0 +1,11 @@
+{
+  "name": "Tailwind CSS Styles Generator",
+  "id": "1167391871470238568",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": [
+    "figma",
+    "figjam"
+  ],
+  "ui": "ui.html"
+}
