@@ -1,13 +1,10 @@
-<h2>Shape Creator</h2>
-<p>Count: <input id="count" type="number" value="5"></p>
-<button id="create">Create</button>
+<h2>Tailwind CSS Styles Generator</h2>
+<button id="create">Generate</button>
 <button id="cancel">Cancel</button>
 <script>
 
 document.getElementById('create').onclick = () => {
-  const textbox = document.getElementById('count');
-  const count = parseInt(textbox.value, 10);
-  parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
+  parent.postMessage({ pluginMessage: { type: 'generate' } }, '*')
 }
 
 document.getElementById('cancel').onclick = () => {
