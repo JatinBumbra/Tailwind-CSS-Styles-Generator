@@ -499,9 +499,11 @@ figma.ui.onmessage = async (msg) => {
         effect.description = description;
       }
     });
+
+    figma.notify('Generated Tailwind CSS styles');
   }
 
-  if (msg.type === 'cancel') {
-    figma.closePlugin('Cancelled by user');
+  if (msg.type === 'close') {
+    figma.closePlugin('Plugin closed');
   }
 };
