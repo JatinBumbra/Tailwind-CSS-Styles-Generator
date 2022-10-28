@@ -422,6 +422,18 @@ figma.showUI(__html__);
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'generate') {
+    const existingTextStylesDescriptions = (
+      await figma.getLocalTextStyles()
+    ).map((style) => style.description);
+
+    const existingEffectStylesDescriptions = (
+      await figma.getLocalEffectStyles()
+    ).map((style) => style.description);
+
+    const existingPaintStylesDescriptions = (
+      await figma.getLocalPaintStyles()
+    ).map((style) => style.description);
+
     const fontFamily = 'Poppins';
     // Get the desired fonts for the given family
     const desiredFonts = await (
@@ -434,41 +446,58 @@ figma.ui.onmessage = async (msg) => {
 
     Object.keys(text).forEach((key) => {
       desiredFonts.forEach(async (font) => {
-        await figma.loadFontAsync(font.fontName);
-        const _text = figma.createTextStyle();
-        _text.name = 'text-' + key + '/' + font.fontName.style.toLowerCase();
-        _text.fontName = font.fontName;
-        // @ts-ignore
-        _text.fontSize = text[key];
-        _text.description = 'tailwind-' + _text.name;
+        const name = 'text-' + key + '/' + font.fontName.style.toLowerCase();
+        const description = 'tailwind-' + name;
+
+        if (!existingTextStylesDescriptions.find((s) => s === description)) {
+          await figma.loadFontAsync(font.fontName);
+
+          const _text = figma.createTextStyle();
+
+          _text.name = name;
+          _text.fontName = font.fontName;
+          // @ts-ignore
+          _text.fontSize = text[key];
+          _text.description = description;
+        }
       });
     });
 
     Object.keys(colors).forEach((color) => {
       // @ts-ignore
       Object.keys(colors[color]).forEach((clr) => {
-        // @ts-ignore
-        const _color = figma.createPaintStyle();
-        // @ts-ignore
-        _color.name = color + '/' + clr;
-        // @ts-ignore
-        const __clr = hexRgb(colors[color][clr]);
-        _color.paints = [
-          {
-            type: 'SOLID',
-            color: { ...__clr },
-          },
-        ];
-        _color.description = 'tailwind-' + _color.name;
+        const name = color + '/' + clr;
+        const description = 'tailwind-' + name;
+
+        if (!existingPaintStylesDescriptions.find((s) => s === description)) {
+          // @ts-ignore
+          const _color = figma.createPaintStyle();
+          // @ts-ignore
+          _color.name = name;
+          // @ts-ignore
+          const rgb = hexRgb(colors[color][clr]);
+          _color.paints = [
+            {
+              type: 'SOLID',
+              color: { ...rgb },
+            },
+          ];
+          _color.description = description;
+        }
       });
     });
 
     Object.keys(shadows).forEach((shadow) => {
-      const effect = figma.createEffectStyle();
-      effect.name = 'shadow-' + shadow;
-      // @ts-ignore
-      effect.effects = shadows[shadow];
-      effect.description = 'tailwind-' + effect.name;
+      const name = 'shadow-' + shadow;
+      const description = 'tailwind-' + name;
+
+      if (!existingEffectStylesDescriptions.find((s) => s === description)) {
+        const effect = figma.createEffectStyle();
+        effect.name = name;
+        // @ts-ignore
+        effect.effects = shadows[shadow];
+        effect.description = description;
+      }
     });
   }
 
