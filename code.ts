@@ -418,7 +418,7 @@ const shadows = {
 };
 
 // MAIN LOGIC
-figma.showUI(__html__);
+figma.showUI(__html__, { height: 460 });
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'generate') {
@@ -434,7 +434,7 @@ figma.ui.onmessage = async (msg) => {
       await figma.getLocalPaintStyles()
     ).map((style) => style.description);
 
-    const fontFamily = 'Poppins';
+    const fontFamily = 'Inter';
     // Get the desired fonts for the given family
     const desiredFonts = await (
       await figma.listAvailableFontsAsync()
@@ -500,10 +500,14 @@ figma.ui.onmessage = async (msg) => {
       }
     });
 
-    figma.notify('Generated Tailwind CSS styles');
+    figma.notify(
+      'Generated Tailwind CSS styles. Thanks for using the plugin. Hope it was helpful! - Jatin Bumbra'
+    );
   }
 
   if (msg.type === 'close') {
-    figma.closePlugin('Plugin closed');
+    figma.closePlugin(
+      'Thanks for using the plugin. Hope it was helpful! - Jatin Bumbra'
+    );
   }
 };

@@ -1,14 +1,88 @@
-<h2>Tailwind CSS Styles Generator</h2>
-<button id="create">Generate</button>
-<button id="close">Close</button>
-<script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;700&display=swap');
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter Tight', sans-serif;
+  }
 
+  .container {
+    margin: 1.2rem;
+  }
+
+  .title {
+    font-weight: 700;
+    margin-top: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .bullet-list {
+    margin-left: 1rem;
+  }
+  .bullet-list > li {
+    margin-bottom: 1rem;
+    color: #888;
+  }
+  .bullet-list > li > b {
+    color: #000;
+  }
+  
+  .btns {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;    
+  }
+
+  .btn {
+    flex: 1;
+    padding: 0.55rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    transition: all 200ms ease-in-out;
+    border-radius: 4px;
+  }
+  .btn:hover {
+    opacity: 0.7;
+  }
+  .btn:active {
+    opacity: 1;
+  }
+
+  .primary-btn {
+    padding: 1rem;
+    background: #0d9488;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .secondary-btn {
+    margin-top: 6px;
+    background: #fff;
+    border: 1px solid;
+  }
+</style>
+<div class="container">
+  <h1 class="title">Tailwind Styles right into your project!</h1>
+  <ul class="bullet-list">
+    <li><b>Text Styles</b> - from "text-xs" upto "text-9xl" with all the weights for your selected font</li>
+    <li><b>Color Styles</b> - all the default colors from Tailwind</li>
+    <li><b>Shadow Styles</b> - "shadow-sm" to "shadow-2xl"</li>
+  </ul>
+  <div class="btns">
+    <button id="create" class="btn primary-btn">Generate</button>
+    <button id="close" class="btn secondary-btn">Close</button>
+  </div>
+</div>
+
+<script>
 document.getElementById('create').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'generate' } }, '*')
 }
-
 document.getElementById('close').onclick = () => {
   parent.postMessage({ pluginMessage: { type: 'close' } }, '*')
 }
-
 </script>
