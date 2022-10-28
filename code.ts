@@ -1,3 +1,4 @@
+// HEX-RGB Method
 const hexCharacters = 'a-f\\d';
 const match3or4Hex = `#?[${hexCharacters}]{3}[${hexCharacters}]?`;
 const match6or8Hex = `#?[${hexCharacters}]{6}([${hexCharacters}]{2})?`;
@@ -27,6 +28,7 @@ function hexRgb(hex: string) {
   return { r: red / 256, g: green / 256, b: blue / 256 };
 }
 
+// COLORS constants
 const colors = {
   slate: {
     50: '#f8fafc',
@@ -294,6 +296,7 @@ const colors = {
   },
 };
 
+// TEXT constants
 const text = {
   xs: 12,
   sm: 14,
@@ -310,6 +313,111 @@ const text = {
   '9xl': 128,
 };
 
+// EFFECT constants
+const shadows = {
+  sm: [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.05 },
+      offset: { x: 0, y: 1 },
+      radius: 2,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+  base: [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 1 },
+      radius: 3,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 1 },
+      radius: 2,
+      spread: -1,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+  md: [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 4 },
+      radius: 6,
+      spread: -1,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 2 },
+      radius: 4,
+      spread: -2,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+  lg: [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 10 },
+      radius: 15,
+      spread: -3,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 4 },
+      radius: 6,
+      spread: -4,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+  xl: [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 20 },
+      radius: 25,
+      spread: -5,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.1 },
+      offset: { x: 0, y: 8 },
+      radius: 10,
+      spread: -6,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+  '2xl': [
+    {
+      type: 'DROP_SHADOW',
+      color: { r: 0, g: 0, b: 0, a: 0.25 },
+      offset: { x: 0, y: 25 },
+      radius: 50,
+      spread: -12,
+      blendMode: 'NORMAL',
+      visible: true,
+    } as DropShadowEffect,
+  ],
+};
+
+// MAIN LOGIC
 figma.showUI(__html__);
 
 figma.ui.onmessage = async (msg) => {
@@ -324,19 +432,17 @@ figma.ui.onmessage = async (msg) => {
         !font.fontName.style.toLowerCase().includes('italic')
     );
 
-    await Promise.all(
-      Object.keys(text).map((key) => {
-        desiredFonts.forEach(async (font) => {
-          await figma.loadFontAsync(font.fontName);
-
-          const _text = figma.createTextStyle();
-          _text.name = key + '/' + font.fontName.style.toLowerCase();
-          _text.fontName = font.fontName;
-          // @ts-ignore
-          _text.fontSize = text[key];
-        });
-      })
-    );
+    Object.keys(text).forEach((key) => {
+      desiredFonts.forEach(async (font) => {
+        await figma.loadFontAsync(font.fontName);
+        const _text = figma.createTextStyle();
+        _text.name = 'text-' + key + '/' + font.fontName.style.toLowerCase();
+        _text.fontName = font.fontName;
+        // @ts-ignore
+        _text.fontSize = text[key];
+        _text.description = 'tailwind-' + _text.name;
+      });
+    });
 
     Object.keys(colors).forEach((color) => {
       // @ts-ignore
@@ -347,15 +453,26 @@ figma.ui.onmessage = async (msg) => {
         _color.name = color + '/' + clr;
         // @ts-ignore
         const __clr = hexRgb(colors[color][clr]);
-        console.log(__clr);
         _color.paints = [
           {
             type: 'SOLID',
             color: { ...__clr },
           },
         ];
+        _color.description = 'tailwind-' + _color.name;
       });
     });
+
+    Object.keys(shadows).forEach((shadow) => {
+      const effect = figma.createEffectStyle();
+      effect.name = 'shadow-' + shadow;
+      // @ts-ignore
+      effect.effects = shadows[shadow];
+      effect.description = 'tailwind-' + effect.name;
+    });
   }
-  // figma.closePlugin('Plugin Ran');
+
+  if (msg.type === 'cancel') {
+    figma.closePlugin('Cancelled by user');
+  }
 };
